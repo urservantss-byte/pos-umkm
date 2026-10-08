@@ -386,7 +386,7 @@ $('#mp-save').addEventListener('click', async () => {
 $('#btn-add-category').addEventListener('click', async () => {
   const name = prompt('Nama kategori baru:');
   if (!name) return;
-  const colors = ['#e84393', '#e17055', '#0984e3', '#6c5ce7', '#00b894', '#fdcb6e'];
+  const colors = ['#10B981', '#059669', '#34D399', '#6EE7B7', '#A7F3D0', '#D1FAE5'];
   await POST('/api/categories', { name, color: colors[S.categories.length % colors.length] });
   loadProduk();
 });
