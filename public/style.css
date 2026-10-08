@@ -35,7 +35,7 @@ body{background:var(--bg);color:var(--txt);
 .btn-primary:hover{filter:brightness(1.1)}
 .btn-primary:disabled{opacity:.45;cursor:not-allowed}
 .btn-ghost{background:var(--bg2);border:1px solid var(--line)}
-.btn-ghost:hover{border-color:var(--accent)}
+.btn-ghost:hover{border-color:var(--accent);background:var(--accent-soft);color:#1E293B}
 .btn-sm{padding:7px 12px;font-size:13.5px}
 .btn-block{width:100%;margin-top:10px}
 
