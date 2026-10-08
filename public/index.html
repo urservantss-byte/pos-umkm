@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>POS UMKM — Kasir</title>
+<meta name="theme-color" content="#141210">
+<link rel="manifest" href="manifest.json?v=1">
+<link rel="stylesheet" href="style.css?v=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧾</text></svg>">
+</head>
+<body>
+<div id="app">
+  <!-- LOGIN -->
+  <section id="view-login" class="view">
+    <div class="login-card">
+      <div class="login-logo">🧾</div>
+      <h1>POS UMKM</h1>
+      <p class="muted">Kasir cepat untuk warung & toko kecil</p>
+      <input id="login-user" class="inp" placeholder="Username" autocomplete="username">
+      <input id="login-pass" class="inp" type="password" placeholder="Password" autocomplete="current-password">
+      <button id="btn-login" class="btn btn-primary btn-block">Masuk</button>
+      <p id="login-err" class="err"></p>
+      <p class="muted small">Default: admin / admin123</p>
+    </div>
+  </section>
+
+  <!-- APP SHELL -->
+  <section id="view-app" class="view hidden">
+    <header class="topbar">
+      <div class="brand">🧾 <b>POS UMKM</b></div>
+      <div class="topbar-right">
+        <span id="sync-badge" class="sync-badge" title="Status sinkronisasi">●</span>
+        <span id="user-name" class="user-chip"></span>
+        <button id="btn-logout" class="btn btn-ghost btn-sm">Keluar</button>
+      </div>
+    </header>
+    <nav class="tabs">
+      <button class="tab active" data-tab="kasir">🛒 Kasir</button>
+      <button class="tab" data-tab="produk">📦 Produk</button>
+      <button class="tab" data-tab="laporan">📊 Laporan</button>
+      <button class="tab hidden" id="tab-admin" data-tab="admin">⚙️ Admin</button>
+    </nav>
+
+    <!-- KASIR -->
+    <div id="tab-kasir" class="tabpane">
+      <div class="kasir-grid">
+        <div class="kasir-left">
+          <div class="search-row">
+            <input id="kasir-search" class="inp" placeholder="🔍 Cari produk / SKU...">
+          </div>
+          <div id="cat-chips" class="chips"></div>
+          <div id="product-grid" class="product-grid"></div>
+        </div>
+        <div class="kasir-right">
+          <div class="cart-card">
+            <h3>🧺 Keranjang</h3>
+            <div id="cart-items" class="cart-items"><p class="muted">Belum ada item. Klik produk untuk tambah.</p></div>
+            <div class="cart-total">
+              <div class="row"><span>Total</span><b id="cart-total">Rp 0</b></div>
+              <div class="row"><span>Bayar</span><input id="pay-amount" class="inp inp-sm" inputmode="numeric" placeholder="0"></div>
+              <div class="row quick-pay">
+                <button class="btn btn-ghost btn-sm qp" data-amt="uangpas">Uang Pas</button>
+                <button class="btn btn-ghost btn-sm qp" data-amt="50000">50rb</button>
+                <button class="btn btn-ghost btn-sm qp" data-amt="100000">100rb</button>
+              </div>
+              <div class="row"><span>Kembalian</span><b id="pay-change">Rp 0</b></div>
+            </div>
+            <button id="btn-checkout" class="btn btn-primary btn-block" disabled>💰 Bayar</button>
+            <button id="btn-clear-cart" class="btn btn-ghost btn-block">Bersihkan</button>
+            <p id="offline-note" class="muted small hidden">📴 Offline — transaksi diantrekan & disinkron otomatis.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUK -->
+    <div id="tab-produk" class="tabpane hidden">
+      <div class="toolbar">
+        <input id="produk-search" class="inp" placeholder="🔍 Cari produk...">
+        <button id="btn-add-product" class="btn btn-primary">+ Produk</button>
+        <button id="btn-add-category" class="btn btn-ghost">+ Kategori</button>
+      </div>
+      <div id="cat-list" class="chips"></div>
+      <table class="tbl">
+        <thead><tr><th>Produk</th><th>SKU</th><th>Harga</th><th>Stok</th><th></th></tr></thead>
+        <tbody id="produk-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- LAPORAN -->
+    <div id="tab-laporan" class="tabpane hidden">
+      <div class="toolbar">
+        <input id="lap-date" type="date" class="inp inp-sm">
+        <button id="btn-lap-refresh" class="btn btn-primary btn-sm">🔄 Muat</button>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label">Omzet</div><div class="stat-val" id="lap-omzet">Rp 0</div></div>
+        <div class="stat-card"><div class="stat-label">Transaksi</div><div class="stat-val" id="lap-trx">0</div></div>
+        <div class="stat-card"><div class="stat-label">Rata-rata</div><div class="stat-val" id="lap-avg">Rp 0</div></div>
+      </div>
+      <h3>🔥 Produk Terlaris</h3>
+      <table class="tbl"><thead><tr><th>Produk</th><th>Qty</th><th>Subtotal</th></tr></thead>
+      <tbody id="lap-top"></tbody></table>
+      <h3>🕐 Per Jam</h3>
+      <div id="lap-hourly" class="hourly"></div>
+      <h3>📅 7 Hari Terakhir</h3>
+      <table class="tbl"><thead><tr><th>Tanggal</th><th>Trx</th><th>Omzet</th></tr></thead>
+      <tbody id="lap-weekly"></tbody></table>
+      <h3>🧾 Transaksi Terakhir</h3>
+      <table class="tbl"><thead><tr><th>Kode</th><th>Kasir</th><th>Total</th><th></th></tr></thead>
+      <tbody id="lap-trx-list"></tbody></table>
+    </div>
+
+    <!-- ADMIN -->
+    <div id="tab-admin" class="tabpane hidden">
+      <h3>👥 Kelola Kasir</h3>
+      <div class="toolbar">
+        <input id="adm-username" class="inp inp-sm" placeholder="username">
+        <input id="adm-password" class="inp inp-sm" type="password" placeholder="password">
+        <input id="adm-name" class="inp inp-sm" placeholder="nama">
+        <button id="btn-adm-add" class="btn btn-primary btn-sm">+ Tambah</button>
+      </div>
+      <table class="tbl"><thead><tr><th>Username</th><th>Nama</th><th>Role</th></tr></thead>
+      <tbody id="adm-users"></tbody></table>
+    </div>
+  </section>
+
+  <!-- MODAL PRODUK -->
+  <div id="modal-product" class="modal hidden">
+    <div class="modal-card">
+      <h3 id="modal-product-title">Tambah Produk</h3>
+      <input id="mp-name" class="inp" placeholder="Nama produk">
+      <select id="mp-cat" class="inp"></select>
+      <input id="mp-price" class="inp" inputmode="numeric" placeholder="Harga (Rp)">
+      <input id="mp-stock" class="inp" inputmode="numeric" placeholder="Stok">
+      <input id="mp-sku" class="inp" placeholder="SKU (opsional)">
+      <div class="modal-actions">
+        <button id="mp-save" class="btn btn-primary">Simpan</button>
+        <button id="mp-cancel" class="btn btn-ghost">Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL STRUK -->
+  <div id="modal-receipt" class="modal hidden">
+    <div class="modal-card receipt-card">
+      <div id="receipt-body" class="receipt"></div>
+      <div class="modal-actions">
+        <button id="btn-print" class="btn btn-primary">🖨️ Print</button>
+        <button id="btn-receipt-close" class="btn btn-ghost">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+</div>
+<script src="app.js?v=1"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js?v=1').catch(()=>{}));
+}
+</script>
+</body>
+</html>

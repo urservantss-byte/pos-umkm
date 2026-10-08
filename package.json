@@ -1,0 +1,15 @@
+{
+  "name": "pos-umkm",
+  "version": "1.0.0",
+  "description": "POS/kasir UMKM - offline-first PWA (node:sqlite, tanpa native build)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

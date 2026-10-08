@@ -1,0 +1,159 @@
+/* POS UMKM — dark premium, Zen: arang hangat + satu aksen berani */
+:root{
+  --bg:#141210; --bg2:#1c1917; --card:#211d1a; --line:#2e2823;
+  --txt:#f5efe8; --muted:#a89e92; --accent:#e84393; --accent-d:#c2255c;
+  --green:#51cf66; --amber:#ffa94d; --red:#ff6b6b; --blue:#74c0fc;
+  --radius:14px; --shadow:0 8px 28px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:15px;line-height:1.55;min-height:100vh}
+.hidden{display:none!important}
+.view{min-height:100vh}
+.muted{color:var(--muted)} .small{font-size:12.5px} .err{color:var(--red);min-height:1.2em}
+
+/* login */
+#view-login{display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:36px 30px;width:100%;max-width:380px;text-align:center;box-shadow:var(--shadow)}
+.login-logo{font-size:52px;margin-bottom:8px}
+.login-card h1{margin:6px 0 2px;font-size:26px;letter-spacing:.5px}
+.login-card .inp{margin-top:12px}
+
+/* inputs & buttons */
+.inp{background:var(--bg2);border:1px solid var(--line);color:var(--txt);
+  border-radius:10px;padding:11px 14px;font-size:15px;width:100%;outline:none}
+.inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,67,147,.15)}
+.inp-sm{width:auto;padding:8px 12px;font-size:14px}
+.btn{border:none;border-radius:10px;padding:11px 18px;font-size:15px;cursor:pointer;
+  font-weight:600;transition:transform .06s,filter .15s;color:var(--txt)}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-d));color:#fff}
+.btn-primary:hover{filter:brightness(1.1)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.btn-ghost{background:var(--bg2);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--accent)}
+.btn-sm{padding:7px 12px;font-size:13.5px}
+.btn-block{width:100%;margin-top:10px}
+
+/* topbar + tabs */
+.topbar{display:flex;justify-content:space-between;align-items:center;
+  padding:14px 20px;background:var(--bg2);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:50}
+.brand{font-size:17px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.user-chip{background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:5px 14px;font-size:13px}
+.sync-badge{font-size:18px;color:var(--green)}
+.sync-badge.off{color:var(--amber)}
+.tabs{display:flex;gap:8px;padding:12px 20px;background:var(--bg2);
+  border-bottom:1px solid var(--line);position:sticky;top:57px;z-index:40;overflow-x:auto}
+.tab{background:transparent;border:1px solid var(--line);color:var(--muted);
+  border-radius:24px;padding:9px 18px;font-size:14.5px;cursor:pointer;white-space:nowrap;font-weight:600}
+.tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tabpane{padding:20px;max-width:1280px;margin:0 auto}
+
+/* kasir */
+.kasir-grid{display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start}
+.search-row{margin-bottom:12px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{background:var(--card);border:1px solid var(--line);color:var(--txt);
+  border-radius:20px;padding:7px 15px;font-size:13.5px;cursor:pointer;font-weight:600}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px;cursor:pointer;transition:border-color .15s,transform .06s;word-break:keep-all}
+.pcard:hover{border-color:var(--accent)} .pcard:active{transform:scale(.97)}
+.pcard .pname{font-weight:600;margin-bottom:4px}
+.pcard .pprice{color:var(--accent);font-weight:700;font-size:15px}
+.pcard .pstock{font-size:12px;color:var(--muted)}
+.pcard.soldout{opacity:.45;pointer-events:none}
+.cart-card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:18px;position:sticky;top:130px;box-shadow:var(--shadow)}
+.cart-card h3{margin:0 0 12px}
+.cart-items{max-height:300px;overflow-y:auto;margin-bottom:12px}
+.cart-line{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px dashed var(--line)}
+.cart-line .cl-name{font-size:14px}
+.cart-line .cl-qty{display:flex;align-items:center;gap:8px}
+.qty-btn{background:var(--bg2);border:1px solid var(--line);color:var(--txt);
+  width:26px;height:26px;border-radius:8px;cursor:pointer;font-size:15px;line-height:1}
+.cart-total .row{display:flex;justify-content:space-between;align-items:center;margin:8px 0}
+.cart-total .row b{font-size:17px}
+#pay-change{color:var(--green)}
+.quick-pay{display:flex;gap:6px;justify-content:flex-end}
+
+/* toolbar & table */
+.toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.toolbar .inp{width:auto;flex:1;min-width:180px}
+.tbl{width:100%;border-collapse:collapse;background:var(--card);
+  border-radius:var(--radius);overflow:hidden;font-size:14px}
+.tbl th,.tbl td{padding:11px 13px;text-align:left;border-bottom:1px solid var(--line)}
+.tbl th{background:var(--bg2);color:var(--muted);font-weight:600;font-size:12.5px;
+  text-transform:uppercase;letter-spacing:.5px}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(232,67,147,.05)}
+
+/* laporan */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px}
+.stat-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.stat-label{color:var(--muted);font-size:13px;margin-bottom:4px}
+.stat-val{font-size:23px;font-weight:700;color:var(--accent)}
+.hourly{display:flex;align-items:flex-end;gap:5px;height:120px;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:8px;overflow-x:auto}
+.hbar{background:linear-gradient(180deg,var(--accent),var(--accent-d));border-radius:4px 4px 0 0;
+  min-width:22px;position:relative}
+.hbar span{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);
+  font-size:10px;color:var(--muted)}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;
+  align-items:center;justify-content:center;z-index:100;padding:18px}
+.modal-card{background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:24px;width:100%;max-width:420px;box-shadow:var(--shadow)}
+.modal-card .inp,.modal-card select{margin-bottom:10px}
+.modal-actions{display:flex;gap:10px;margin-top:6px}
+.modal-actions .btn{flex:1}
+
+/* struk */
+.receipt-card{max-width:340px}
+.receipt{background:#fff;color:#111;border-radius:8px;padding:20px 16px;
+  font-family:"Courier New",monospace;font-size:13px;line-height:1.5}
+.receipt h4{text-align:center;margin:0 0 4px;font-size:15px}
+.receipt .rc{text-align:center;color:#555;margin-bottom:10px}
+.receipt table{width:100%;border-collapse:collapse}
+.receipt td{padding:2px 0;vertical-align:top}
+.receipt .tot{border-top:1px dashed #999;margin-top:8px;padding-top:8px;font-weight:bold}
+.receipt .foot{text-align:center;margin-top:10px;color:#555}
+@media print{
+  body{background:#fff} .modal{position:static;background:none;padding:0}
+  .modal-card{box-shadow:none;border:none;max-width:100%}
+  .modal-actions,#view-app .topbar,#view-app .tabs{display:none}
+  .receipt{border-radius:0}
+}
+
+/* toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:var(--card);border:1px solid var(--accent);color:var(--txt);
+  padding:12px 22px;border-radius:24px;z-index:200;box-shadow:var(--shadow);font-size:14px}
+
+/* responsive */
+@media (max-width:900px){
+  .kasir-grid{grid-template-columns:1fr}
+  .cart-card{position:static}
+  .tabpane{padding:14px}
+  .topbar{padding:12px 14px}
+  .tabs{padding:10px 14px;top:53px}
+  .product-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+  .stat-val{font-size:19px}
+  .tbl{font-size:13px}
+  .tbl th,.tbl td{padding:9px 8px}
+}
+@media (max-width:480px){
+  .login-card{padding:28px 20px}
+  .toolbar .inp{flex:1 1 100%}
+  .modal-card{padding:18px}
+}
