@@ -1,9 +1,10 @@
-/* POS UMKM — dark premium, Zen: arang hangat + satu aksen berani */
+/* POS UMKM — Fresh Mint: putih bersih + aksen emerald */
 :root{
-  --bg:#141210; --bg2:#1c1917; --card:#211d1a; --line:#2e2823;
-  --txt:#f5efe8; --muted:#a89e92; --accent:#e84393; --accent-d:#c2255c;
-  --green:#51cf66; --amber:#ffa94d; --red:#ff6b6b; --blue:#74c0fc;
-  --radius:14px; --shadow:0 8px 28px rgba(0,0,0,.45);
+  --bg:#FFFFFF; --bg2:#F9FAFB; --card:#FFFFFF; --line:#E5E7EB;
+  --txt:#111827; --muted:#6B7280; --accent:#10B981; --accent-d:#059669;
+  --accent-soft:#D1FAE5;
+  --green:#10B981; --amber:#F59E0B; --red:#EF4444; --blue:#3B82F6;
+  --radius:14px; --shadow:0 4px 16px rgba(16,185,129,.08);
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -25,7 +26,7 @@ body{background:var(--bg);color:var(--txt);
 /* inputs & buttons */
 .inp{background:var(--bg2);border:1px solid var(--line);color:var(--txt);
   border-radius:10px;padding:11px 14px;font-size:15px;width:100%;outline:none}
-.inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,67,147,.15)}
+.inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(16,185,129,.15)}
 .inp-sm{width:auto;padding:8px 12px;font-size:14px}
 .btn{border:none;border-radius:10px;padding:11px 18px;font-size:15px;cursor:pointer;
   font-weight:600;transition:transform .06s,filter .15s;color:var(--txt)}
@@ -95,7 +96,7 @@ body{background:var(--bg);color:var(--txt);
 .tbl th{background:var(--bg2);color:var(--muted);font-weight:600;font-size:12.5px;
   text-transform:uppercase;letter-spacing:.5px}
 .tbl tr:last-child td{border-bottom:none}
-.tbl tr:hover td{background:rgba(232,67,147,.05)}
+.tbl tr:hover td{background:rgba(16,185,129,.06)}
 
 /* laporan */
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px}
