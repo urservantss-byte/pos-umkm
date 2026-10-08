@@ -129,11 +129,16 @@ body{background:var(--bg);color:var(--txt);
 .receipt .tot{border-top:1px dashed #999;margin-top:8px;padding-top:8px;font-weight:bold}
 .receipt .foot{text-align:center;margin-top:10px;color:#555}
 @media print{
-  body{background:#fff} .modal{position:static;background:none;padding:0}
+  body{background:#fff}
+  #view-app,#view-login,#toast{display:none!important}
+  .modal{display:block!important;position:static;background:none;padding:0}
   .modal-card{box-shadow:none;border:none;max-width:100%}
-  .modal-actions,#view-app .topbar,#view-app .tabs{display:none}
+  .modal-actions{display:none}
   .receipt{border-radius:0}
 }
+/* settings form */
+.settings-form{display:grid;gap:10px;max-width:480px;margin:12px 0 24px}
+.settings-form label{display:grid;gap:6px;font-size:13px;color:var(--muted)}
 
 /* toast */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);

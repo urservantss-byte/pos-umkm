@@ -55,6 +55,10 @@ CREATE TABLE IF NOT EXISTS transactions (
   idempotency_key TEXT UNIQUE,
   created_at INTEGER DEFAULT (strftime('%s','now'))
 );
+CREATE TABLE IF NOT EXISTS settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL DEFAULT ''
+);
 CREATE TABLE IF NOT EXISTS transaction_items (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   transaction_id INTEGER NOT NULL,
@@ -90,6 +94,16 @@ CREATE TABLE IF NOT EXISTS transaction_items (
     p.run('Es Teh Manis', n, 5000, 100, 'MN-001');
     p.run('Kopi Tubruk', n, 8000, 80, 'MN-002');
     console.log('[seed] contoh kategori & produk dibuat');
+  }
+  const defaults = {
+    store_name: 'POS UMKM',
+    store_address: 'Jl. Merdeka No. 10',
+    store_phone: '0812-0000-0000',
+    receipt_footer: 'Terima kasih sudah berbelanja 🙏',
+  };
+  for (const [k, v] of Object.entries(defaults)) {
+    if (!db.prepare('SELECT 1 FROM settings WHERE key=?').get(k))
+      db.prepare('INSERT INTO settings (key,value) VALUES (?,?)').run(k, v);
   }
 })();
 
@@ -288,6 +302,31 @@ app.get('/api/reports/summary', auth, (req, res) => {
   res.json(out);
 });
 
+// ---------- settings ----------
+const SETTING_KEYS = ['store_name', 'store_address', 'store_phone', 'receipt_footer'];
+function allSettings() {
+  const out = {};
+  for (const r of db.prepare('SELECT key,value FROM settings').all()) out[r.key] = r.value;
+  return out;
+}
+app.get('/api/store-info', (req, res) => {
+  res.json({ store_name: (allSettings().store_name || 'POS UMKM') });
+});
+app.get('/api/settings', auth, (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ error: 'admin only' });
+  res.json(allSettings());
+});
+app.put('/api/settings', auth, (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ error: 'admin only' });
+  const b = req.body || {};
+  for (const k of SETTING_KEYS) {
+    if (b[k] !== undefined)
+      db.prepare('INSERT INTO settings (key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value')
+        .run(k, String(b[k]));
+  }
+  res.json(allSettings());
+});
+
 // ---------- users (admin) ----------
 app.get('/api/users', auth, (req, res) => {
   if (req.user.role !== 'admin') return res.status(403).json({ error: 'admin only' });
@@ -302,6 +341,12 @@ app.post('/api/users', auth, (req, res) => {
       .run(username, sha(password), name, role === 'admin' ? 'admin' : 'kasir');
     res.json({ id: Number(r.lastInsertRowid) });
   } catch (e) { res.status(400).json({ error: 'username sudah dipakai' }); }
+});
+app.delete('/api/users/:id', auth, (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ error: 'admin only' });
+  if (+req.params.id === req.user.id) return res.status(400).json({ error: 'tidak bisa hapus akun sendiri' });
+  db.prepare('DELETE FROM users WHERE id=?').run(req.params.id);
+  res.json({ ok: true });
 });
 
 // ---------- static ----------

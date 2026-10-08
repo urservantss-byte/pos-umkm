@@ -1,8 +1,8 @@
 // POS UMKM service worker — offline-first app shell
-const CACHE = 'pos-umkm-v1';
+const CACHE = 'pos-umkm-v2';
 const SHELL = [
   './', './index.html',
-  './style.css?v=1', './app.js?v=1', './manifest.json?v=1',
+  './style.css?v=2', './app.js?v=2', './manifest.json?v=2',
 ];
 
 self.addEventListener('install', (e) => {

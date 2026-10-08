@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>POS UMKM — Kasir</title>
 <meta name="theme-color" content="#141210">
-<link rel="manifest" href="manifest.json?v=1">
-<link rel="stylesheet" href="style.css?v=1">
+<link rel="manifest" href="manifest.json?v=2">
+<link rel="stylesheet" href="style.css?v=2">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧾</text></svg>">
 </head>
 <body>
@@ -121,8 +121,17 @@
         <input id="adm-name" class="inp inp-sm" placeholder="nama">
         <button id="btn-adm-add" class="btn btn-primary btn-sm">+ Tambah</button>
       </div>
-      <table class="tbl"><thead><tr><th>Username</th><th>Nama</th><th>Role</th></tr></thead>
+      <table class="tbl"><thead><tr><th>Username</th><th>Nama</th><th>Role</th><th></th></tr></thead>
       <tbody id="adm-users"></tbody></table>
+
+      <h3>🏪 Pengaturan Toko</h3>
+      <div class="settings-form">
+        <label>Nama toko<input id="set-name" class="inp" placeholder="Nama toko"></label>
+        <label>Alamat<input id="set-address" class="inp" placeholder="Alamat toko"></label>
+        <label>Telepon<input id="set-phone" class="inp" placeholder="No. telepon/WA"></label>
+        <label>Teks footer struk<input id="set-footer" class="inp" placeholder="Terima kasih..."></label>
+        <button id="btn-set-save" class="btn btn-primary">💾 Simpan Pengaturan</button>
+      </div>
     </div>
   </section>
 
@@ -155,10 +164,10 @@
 
   <div id="toast" class="toast hidden"></div>
 </div>
-<script src="app.js?v=1"></script>
+<script src="app.js?v=2"></script>
 <script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js?v=1').catch(()=>{}));
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js?v=2').catch(()=>{}));
 }
 </script>
 </body>

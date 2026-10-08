@@ -9,6 +9,7 @@ const S = {
   token: localStorage.getItem('pos_token') || null,
   user: JSON.parse(localStorage.getItem('pos_user') || 'null'),
   products: [], categories: [], cart: [], activeCat: 0, trx: [],
+  settings: { store_name: 'POS UMKM', store_address: '', store_phone: '', receipt_footer: 'Terima kasih 🙏' },
 };
 
 async function api(method, url, body) {
@@ -137,6 +138,9 @@ $$('.tab').forEach((t) => t.addEventListener('click', () => {
 
 async function loadAll() {
   await Promise.all([loadCats(), loadProducts()]);
+  if (S.user.role === 'admin') {
+    try { S.settings = { ...S.settings, ...(await GET('/api/settings')) }; } catch (e) {}
+  }
   renderKasir(); syncQueue();
 }
 
@@ -276,11 +280,13 @@ $('#btn-checkout').addEventListener('click', async () => {
 // ---------- struk ----------
 function showReceipt(t) {
   const dt = new Date((t.created_at || Date.now() / 1000) * 1000);
+  const st = S.settings;
   const rows = t.items.map((i) =>
     `<tr><td>${esc(i.product_name)}<br><span style="color:#555">${i.qty} × ${rupiah(i.price)}</span></td>` +
     `<td align="right">${rupiah(i.subtotal)}</td></tr>`).join('');
   $('#receipt-body').innerHTML = `
-    <h4>🧾 POS UMKM</h4>
+    <h4>🧾 ${esc(st.store_name || 'POS UMKM')}</h4>
+    ${st.store_address ? `<div class="rc">${esc(st.store_address)}${st.store_phone ? ' · ' + esc(st.store_phone) : ''}</div>` : ''}
     <div class="rc">Struk Pembelian<br>${esc(t.code || '')}<br>
     ${dt.toLocaleString('id-ID')} · Kasir: ${esc(t.cashier_name || '')}${t.offline ? '<br><b>(OFFLINE — antre sync)</b>' : ''}</div>
     <table>${rows}</table>
@@ -291,7 +297,7 @@ function showReceipt(t) {
         <tr><td>Kembali</td><td align="right">${rupiah(t.change)}</td></tr>
       </table>
     </div>
-    <div class="foot">Terima kasih 🙏</div>`;
+    <div class="foot">${esc(st.receipt_footer || 'Terima kasih 🙏')}</div>`;
   $('#modal-receipt').classList.remove('hidden');
 }
 $('#btn-receipt-close').addEventListener('click', () => $('#modal-receipt').classList.add('hidden'));
@@ -309,11 +315,20 @@ async function loadProduk() {
 function renderCatList() {
   $('#cat-list').innerHTML = S.categories.map((c) =>
     `<span class="chip"><span class="dot" style="background:${c.color}"></span>${esc(c.name)}
-     <a href="#" data-del-cat="${c.id}" style="color:var(--red);margin-left:6px">✕</a></span>`).join('');
+     <a href="#" data-edit-cat="${c.id}" style="margin-left:8px">✏️</a>
+     <a href="#" data-del-cat="${c.id}" style="color:var(--red);margin-left:4px">✕</a></span>`).join('');
   $$('#cat-list [data-del-cat]').forEach((a) => a.addEventListener('click', async (e) => {
     e.preventDefault();
     if (!confirm('Hapus kategori ini?')) return;
     await DEL('/api/categories/' + a.dataset.delCat);
+    loadProduk();
+  }));
+  $$('#cat-list [data-edit-cat]').forEach((a) => a.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const c = S.categories.find((x) => x.id === +a.dataset.editCat);
+    const name = prompt('Nama kategori:', c.name);
+    if (name === null || !name.trim()) return;
+    await PUT('/api/categories/' + c.id, { name: name.trim() });
     loadProduk();
   }));
 }
@@ -411,9 +426,36 @@ async function loadUsers() {
   try {
     const us = await GET('/api/users');
     $('#adm-users').innerHTML = us.map((u) =>
-      `<tr><td>${esc(u.username)}</td><td>${esc(u.name)}</td><td>${u.role}</td></tr>`).join('');
+      `<tr><td>${esc(u.username)}</td><td>${esc(u.name)}</td><td>${u.role}</td>
+       <td>${u.id !== S.user.id ? `<button class="btn btn-ghost btn-sm" data-del-user="${u.id}">🗑️</button>` : ''}</td></tr>`).join('');
+    $$('#adm-users [data-del-user]').forEach((b) => b.addEventListener('click', async () => {
+      if (!confirm('Hapus user ini?')) return;
+      try { await DEL('/api/users/' + b.dataset.delUser); loadUsers(); toast('User dihapus'); }
+      catch (e) { toast(e.message); }
+    }));
   } catch (e) { toast(e.message); }
+  loadSettings();
 }
+async function loadSettings() {
+  try {
+    S.settings = { ...S.settings, ...(await GET('/api/settings')) };
+  } catch (e) { /* kasir tidak boleh akses, pakai default */ }
+  $('#set-name').value = S.settings.store_name || '';
+  $('#set-address').value = S.settings.store_address || '';
+  $('#set-phone').value = S.settings.store_phone || '';
+  $('#set-footer').value = S.settings.receipt_footer || '';
+}
+$('#btn-set-save').addEventListener('click', async () => {
+  try {
+    S.settings = await PUT('/api/settings', {
+      store_name: $('#set-name').value.trim(),
+      store_address: $('#set-address').value.trim(),
+      store_phone: $('#set-phone').value.trim(),
+      receipt_footer: $('#set-footer').value.trim(),
+    });
+    toast('Pengaturan tersimpan');
+  } catch (e) { toast(e.message); }
+});
 $('#btn-adm-add').addEventListener('click', async () => {
   try {
     await POST('/api/users', {
@@ -434,6 +476,10 @@ $('#btn-logout').addEventListener('click', doLogout);
 (async function boot() {
   $('#lap-date').value = new Date().toISOString().slice(0, 10);
   await DBQ.open().catch(() => {});
+  try {
+    const info = await (await fetch('/api/store-info')).json();
+    if (info.store_name) document.querySelector('#view-login h1').textContent = info.store_name;
+  } catch (e) {}
   setOnline(navigator.onLine);
   if (S.token) {
     try { const me = await GET('/api/me'); S.user = me.user; enterApp(); }
